@@ -1,0 +1,18 @@
+{
+    "name": "js-wire-compatibility",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {},
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "devDependencies": {
+        "@types/node": "^26.1.1"
+    },
+    "dependencies": {
+        "@ethersphere/bee-js": "^12.3.1",
+        "cafe-utility": "^36.2.0"
+    }
+}

@@ -1,0 +1,42 @@
+name: wire-compatibility
+
+on:
+    workflow_dispatch:
+    push:
+        branches: [main]
+
+jobs:
+    wire-compatibility:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install Hugo
+              uses: peaceiris/actions-hugo@v3
+              with:
+                  hugo-version: latest
+                  extended: true
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Install swarm-cli and swarm-fs
+              run: pnpm add -g @ethersphere/swarm-cli swarm-fs
+
+            - name: Run correctness check
+              run: pnpm dlx tsx src/index.ts
+              env:
+                  SWARMFS_UPLOAD_URL: ${{ secrets.SWARMFS_UPLOAD_URL }}
+                  SWARMFS_SIGNER: ${{ secrets.SWARMFS_SIGNER }}
+                  SWARMFS_BATCH_ID: ${{ secrets.SWARMFS_BATCH_ID }}
+                  SWARMFS_BATCH_DEPTH: ${{ secrets.SWARMFS_BATCH_DEPTH }}
