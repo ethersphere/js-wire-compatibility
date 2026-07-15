@@ -49,7 +49,7 @@ async function verify(swarmCliHash: `0x${string}`, swarmFsHash: `0x${string}`, b
 async function uploadWithSwarmCli(): Promise<`0x${string}`> {
     const output = await runCommand(
         'swarm-cli',
-        ['upload', '.', '--stamp', NULL_STAMP.toHex(), '--bee-api-url', 'https://api.gateway.ethswarm.org'],
+        ['upload', '.', '--stamp', NULL_STAMP.toHex(), '--bee-api-url', 'https://bzz.limo'],
         { cwd: './tmp/public' }
     )
     const match = output.match(/^Swarm hash:\s+([a-f0-9]+)/m)
@@ -67,7 +67,7 @@ async function uploadWithSwarmFs(): Promise<`0x${string}`> {
 }
 
 async function uploadWithBeeJs(): Promise<`0x${string}`> {
-    const bee = new Bee('https://api.gateway.ethswarm.org')
+    const bee = new Bee('https://bzz.limo')
     const files = await walkDir('./tmp/public')
     let processed = 0
     // path => hash
