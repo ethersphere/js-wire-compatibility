@@ -31,7 +31,7 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Install swarm-cli and swarm-fs
-              run: pnpm add -g @ethersphere/swarm-cli swarm-fs
+              run: pnpm add -g @ethersphere/swarm-cli swarm-fs --allow-build=better-sqlite3
 
             - name: Run correctness check
               run: pnpm dlx tsx src/index.ts
