@@ -85,8 +85,8 @@ async function uploadWithBeeJs(): Promise<`0x${string}`> {
     processed = 0
     const manifest = new MantarayNode()
     for (const [path, hash] of map.entries()) {
+        console.log(`Adding fork ${path} (${processed++} / ${map.size})...`)
         manifest.addFork(path, hash)
-        console.log(`Processed ${++processed} of ${files.length} fork...`)
     }
     const result = await manifest.saveRecursively(bee, NULL_STAMP)
     return Types.asHexString(result.reference.toHex(), { byteLength: 32 })
