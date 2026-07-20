@@ -22,24 +22,24 @@ async function main() {
     await runCommand('hugo', ['-D', '--gc'], { cwd: './tmp' })
     // Upload
     const swarmCliHash = await uploadWithSwarmCli()
-    const swarmFsHash = await uploadWithSwarmFs()
+    const etherchunk = await uploadWithEtherchunk()
     const beeJsHash = await uploadWithBeeJs()
     // Wait for propagation
     await System.sleepMillis(Dates.minutes(1))
     // Verify payloads
-    console.log({ swarmCliHash, swarmFsHash, beeJsHash })
-    await verify(swarmCliHash, swarmFsHash, beeJsHash)
+    console.log({ swarmCliHash, etherchunk, beeJsHash })
+    await verify(swarmCliHash, etherchunk, beeJsHash)
 }
 
-async function verify(swarmCliHash: `0x${string}`, swarmFsHash: `0x${string}`, beeJsHash: `0x${string}`) {
+async function verify(swarmCliHash: `0x${string}`, etherchunkHash: `0x${string}`, beeJsHash: `0x${string}`) {
     for (const path of pathsToVerify) {
         console.log(`Verifying payload for ${path}...`)
         const cliPayload = await getPayload(swarmCliHash, path)
-        const fsPayload = await getPayload(swarmFsHash, path)
+        const etherchunkPayload = await getPayload(etherchunkHash, path)
         const beeJsPayload = await getPayload(beeJsHash, path)
-        if (!Binary.equals(cliPayload, fsPayload) || !Binary.equals(cliPayload, beeJsPayload)) {
+        if (!Binary.equals(cliPayload, etherchunkPayload) || !Binary.equals(cliPayload, beeJsPayload)) {
             await writeFile(`mismatch__swarm-cli.bin`, cliPayload)
-            await writeFile(`mismatch__swarm-fs.bin`, fsPayload)
+            await writeFile(`mismatch__etherchunk.bin`, etherchunkPayload)
             await writeFile(`mismatch__bee-js.bin`, beeJsPayload)
             throw new Error(`Payload mismatch for ${path}`)
         }
@@ -60,8 +60,8 @@ async function uploadWithSwarmCli(): Promise<`0x${string}`> {
     return Types.asHexString(hash, { byteLength: 32 })
 }
 
-async function uploadWithSwarmFs(): Promise<`0x${string}`> {
-    const output = await runCommand('swarm-fs', ['upload', '.'], { cwd: './tmp/public' })
+async function uploadWithEtherchunk(): Promise<`0x${string}`> {
+    const output = await runCommand('etherchunk', ['upload', '.'], { cwd: './tmp/public' })
     const lines = output.split('\n').filter(x => x)
     return Types.asHexString(Arrays.last(lines), { byteLength: 32 })
 }
